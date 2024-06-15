@@ -1,6 +1,6 @@
 import React, { useRef, useState } from "react";
 import CloseIcon from "@mui/icons-material/Close";
-import { postRequest } from "../axios";
+import useAxios from "./Hooks/useAxios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -9,25 +9,40 @@ const Modal = ({ closeModal }) => {
   const [productDetail, setProductDetail] = useState("");
   const [productAllergen, setProductAllergen] = useState("");
   const [error, setError] = useState(false);
+  const { data, loading, error: apiError, sendRequest } = useAxios();
 
   const product_name = useRef("");
   const detail_ref = useRef("");
-  const allergen_ref = useRef(false);
+  const allergen_ref = useRef("");
 
   const notify = (data) => toast.success(data);
 
-  const sendData = async () => {
-    const data = {
+  // const sendData = async () => {
+  //   const data = {
+  //     product_name: { productName },
+  //     product_detail: { productDetail },
+  //     allergen_info: { productAllergen },
+  //   };
+  //   try {
+  //     const res = await postRequest("/products", JSON.stringify(data));
+  //     notify(res.data);
+  //   } catch (error) {
+  //     toast.error(error);
+  //   }
+  // };
+
+  const sendData = () => {
+    const productData = {
       product_name: { productName },
       product_detail: { productDetail },
       allergen_info: { productAllergen },
     };
-    try {
-      const res = await postRequest("/products", JSON.stringify(data));
-      notify(res.data);
-    } catch (error) {
-      toast.error(error);
-    }
+    sendRequest(
+      "https://frontend-assessment-server.onrender.com/api/products",
+      "POST",
+      productData,
+      { headers: { "Content-Type": "application/json" } }
+    );
   };
 
   // called on form submit
@@ -58,6 +73,7 @@ const Modal = ({ closeModal }) => {
     // console.log(product_name.current.value);
     // console.log(allergen_ref.current.value);
     // console.log(detail_ref.current.value);
+
     product_name.current.value = "";
     detail_ref.current.value = "";
     allergen_ref.current.value = "";
@@ -94,7 +110,7 @@ const Modal = ({ closeModal }) => {
             />
           </div>
           <div className="flex flex-col gap-1">
-            <label className="text-base font-semibold" htmlFor="productdetails">
+            <label className="text-base font-semibold" htmlFor="productdetail">
               Product Description
             </label>
             <input

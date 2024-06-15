@@ -7,28 +7,35 @@ import Skeleton from "../Components/Skeleton";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Link } from "react-router-dom";
+import useAxios from "../Components/Hooks/useAxios";
 
 const Product = () => {
-  const [productsData, setProductsData] = useState([]);
-  const [error, setError] = useState("");
+  // const [productsData, setProductsData] = useState([]);
+  // const [error, setError] = useState("");
   const [showModal, setShowModal] = useState(false);
-  const [loading, setLoading] = useState(true);
+  // const [loading, setLoading] = useState(true);
+
+  const { data: productsData, loading, error, sendRequest } = useAxios();
 
   useEffect(() => {
-    const FetchData = async () => {
-      try {
-        const response = await getRequest("/products");
-        setProductsData(response.data);
-        setLoading(false);
-        // console.log(response);
-      } catch (error) {
-        toast.error(error.message);
-        setLoading(false);
-        setError(error);
-      }
-    };
-    FetchData();
+    sendRequest("https://frontend-assessment-server.onrender.com/api/products");
   }, []);
+
+  // useEffect(() => {
+  //   const FetchData = async () => {
+  //     try {
+  //       const response = await getRequest("/products");
+  //       setProductsData(response.data);
+  //       setLoading(false);
+  //       // console.log(response);
+  //     } catch (error) {
+  //       toast.error(error.message);
+  //       setLoading(false);
+  //       setError(error);
+  //     }
+  //   };
+  //   FetchData();
+  // }, []);
 
   const compareSort = (a, b) => {
     return a.selling_price - b.selling_price;
@@ -59,11 +66,10 @@ const Product = () => {
           Array(10)
             .fill(0)
             .map((_, index) => <Skeleton key={index} />)}
-        {productsData.sort(compareSort).map((product, index) => {
+        {productsData?.sort(compareSort).map((product, index) => {
           return (
-            <Link to={`/product/${product.id}`}>
+            <Link key={index} to={`/product/${product.id}`}>
               <ProductCard
-                key={index}
                 name={product.name}
                 description={product.description}
                 allergen_info={product.allergen_info}
