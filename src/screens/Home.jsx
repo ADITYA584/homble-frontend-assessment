@@ -8,10 +8,20 @@ const Home = () => {
       <p>Pages overview:</p>
       <ul>
         <Link to="/product">
-          <li> Page 1 - Product list page and create button</li>
+          <li>
+            {" "}
+            Page 1 - Product list page and create button{" "}
+            <span className="text-green-500 font-bold">Completed</span>
+          </li>
         </Link>
-        <li>Page 2 - Product detail page</li>
-        <li>Page 3 - Product dashboard</li>
+        <li>
+          Page 2 - Product detail page{" "}
+          <span className="text-green-500 font-bold"> Completed</span>
+        </li>
+        <li>
+          Page 3 - Product dashboard{" "}
+          <span className="text-green-500 font-bold">Completed</span>
+        </li>
       </ul>
     </div>
   );
