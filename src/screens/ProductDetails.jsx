@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import useAxios from "../Components/Hooks/useAxios";
+import { useDispatch, useSelector } from "react-redux";
+import { AddToCart } from "../store/cartSlice";
 
 const ProductDetails = () => {
   const [hidden, setHidden] = useState(false);
@@ -8,7 +10,8 @@ const ProductDetails = () => {
   const { id } = useParams();
   const url = `https://frontend-assessment-server.onrender.com/api/products/${id}`;
 
-  const { data: productData, loading, error, sendRequest } = useAxios();
+  const { data: productData, loading, sendRequest } = useAxios();
+  const dispatch = useDispatch();
 
   useEffect(() => {
     sendRequest(url);
@@ -164,12 +167,32 @@ const ProductDetails = () => {
               </div>
             </div>
           </div>
-          <div>
+          <div className="flex flex-col gap-4">
             {" "}
             <div className="flex items-top p-3 rounded-lg justify-around bg-slate-100 ">
               {" "}
               <p className="text-xl font-semibold ">Price</p>{" "}
               <p className="text-xl">₹{productData?.selling_price}</p>{" "}
+            </div>
+            <div>
+              <button
+                onClick={() => {
+                  dispatch(
+                    AddToCart({
+                      cartItem: {
+                        id: productData.id,
+                        name: productData.name,
+                        price: productData.selling_price,
+                        image: productData.productImage,
+                      },
+                      quantity: 1,
+                    })
+                  );
+                }}
+                className="p-2  w-full bg-green-500 rounded-lg text-white text-xl"
+              >
+                Add to Cart
+              </button>
             </div>
           </div>
         </div>

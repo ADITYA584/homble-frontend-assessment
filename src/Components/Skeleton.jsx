@@ -2,7 +2,7 @@ import React from "react";
 
 const Skeleton = () => {
   return (
-    <div className="shadow-md p-2 w-[18.75rem ] sm:w-[20rem] sm:max-w-[23.125rem] ">
+    <div className="shadow-md p-2 w-[18.75rem ] sm:w-[20rem] ">
       <div className="h-48 bg-gray-300 rounded-[1rem] animate-custom-pulse "></div>
       <div className="p-2 text-lg">
         <div className="flex justify-between mb-2">

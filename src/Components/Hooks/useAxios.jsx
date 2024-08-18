@@ -48,11 +48,11 @@ const useAxios = (
     []
   );
 
-  useEffect(() => {
-    if (method === "GET" && url) {
-      sendRequest(url, method, body, options);
-    }
-  }, [url, method, body, options, sendRequest]);
+  // useEffect(() => {
+  //   if (method === "GET" && url) {
+  //     sendRequest(url, method, body, options);
+  //   }
+  // }, [url, method, body, options, sendRequest]);
 
   const triggerRequest = (
     requestUrl,

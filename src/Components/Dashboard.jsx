@@ -33,7 +33,7 @@ const Dashboard = () => {
   const filteredData = products?.filter(
     (item) =>
       item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      item.id.toString().includes(searchTerm)
+      item.id.toString().includes(searchTerm.trim())
   );
 
   const sortedData = filteredData?.sort((a, b) => {

@@ -8,34 +8,19 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Link } from "react-router-dom";
 import useAxios from "../Components/Hooks/useAxios";
+import { useDispatch, useSelector } from "react-redux";
+import { AddToCart } from "../store/cartSlice";
 
 const Product = () => {
-  // const [productsData, setProductsData] = useState([]);
-  // const [error, setError] = useState("");
   const [showModal, setShowModal] = useState(false);
-  // const [loading, setLoading] = useState(true);
+  const dispatch = useDispatch();
+  const cart = useSelector((state) => state.cart);
 
   const { data: productsData, loading, error, sendRequest } = useAxios();
 
   useEffect(() => {
     sendRequest("https://frontend-assessment-server.onrender.com/api/products");
   }, []);
-
-  // useEffect(() => {
-  //   const FetchData = async () => {
-  //     try {
-  //       const response = await getRequest("/products");
-  //       setProductsData(response.data);
-  //       setLoading(false);
-  //       // console.log(response);
-  //     } catch (error) {
-  //       toast.error(error.message);
-  //       setLoading(false);
-  //       setError(error);
-  //     }
-  //   };
-  //   FetchData();
-  // }, []);
 
   const compareSort = (a, b) => {
     return a.selling_price - b.selling_price;
@@ -47,20 +32,6 @@ const Product = () => {
 
   return (
     <div className="flex flex-col items-center">
-      {showModal &&
-        createPortal(
-          <Modal closeModal={ModalClose} />,
-          document.getElementById("root")
-        )}
-      <div>
-        <button
-          onClick={() => setShowModal(true)}
-          className=" p-2 m-2 bg-green-500 rounded-lg text-white text-xl"
-        >
-          Add Product
-        </button>
-      </div>
-
       <div className="grid place-items-center grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-10 p-8">
         {loading &&
           Array(10)
@@ -68,18 +39,39 @@ const Product = () => {
             .map((_, index) => <Skeleton key={index} />)}
         {productsData?.sort(compareSort).map((product, index) => {
           return (
-            <Link key={index} to={`/product/${product.id}`}>
-              <ProductCard
-                name={product.name}
-                description={product.description}
-                allergen_info={product.allergen_info}
-                cooking_instruction={product.cooking_instruction}
-                cost_price={product.cost_price}
-                selling_price={product.selling_price}
-                productImage={product.productImage}
-                id={product.id}
-              />
-            </Link>
+            <div key={index}>
+              <Link to={`/product/${product.id}`}>
+                <ProductCard
+                  name={product.name}
+                  description={product.description}
+                  allergen_info={product.allergen_info}
+                  cooking_instruction={product.cooking_instruction}
+                  cost_price={product.cost_price}
+                  selling_price={product.selling_price}
+                  productImage={product.productImage}
+                  id={product.id}
+                />
+              </Link>
+              <button
+                onClick={() => {
+                  const temp = {
+                    cartItem: {
+                      id: product.id,
+                      name: product.name,
+                      price: product.selling_price,
+                      image: product.productImage,
+                    },
+                    quantity: 1,
+                  };
+                  dispatch(AddToCart(temp));
+
+                  console.log(cart.items);
+                }}
+                className="w-full text-white font-semibold p-2 bg-green-500 rounded-lg "
+              >
+                Add to Cart
+              </button>
+            </div>
           );
         })}
         <ToastContainer />
